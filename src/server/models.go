@@ -1,6 +1,6 @@
 package server
 
-type Response struct {
+type HttpResponse struct {
 	HttpVersion     string
 	StatusCode      int
 	Status          string
@@ -9,7 +9,7 @@ type Response struct {
 	CloseConnection bool
 }
 
-type Request struct {
+type HttpRequest struct {
 	Ip       string
 	Url      string
 	UrlParam map[string]string

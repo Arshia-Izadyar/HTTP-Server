@@ -52,18 +52,5 @@ func (s *Server) handleIncomingRequest(cnn net.Conn) {
 		return
 	}
 	// TODO remove
-
-}
-
-func invalidRequestResponse(cnn net.Conn) {
-	invalidResponse := Response{
-		HttpVersion:     "HTTP/1.1",
-		StatusCode:      400,
-		Status:          "Bad Request",
-		Body:            "",
-		ContentType:     "text/html",
-		CloseConnection: true,
-	}
-	res, _ := invalidResponse.Build()
-	cnn.Write([]byte(res))
+	s.Handler.ServHTTP(request, cnn)
 }

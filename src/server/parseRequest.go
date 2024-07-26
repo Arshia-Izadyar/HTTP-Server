@@ -4,8 +4,8 @@ import (
 	"strings"
 )
 
-func ParseHttpRequest(req string, remoteAddr string) *Request {
-	parsedRequest := &Request{
+func ParseHttpRequest(req string, remoteAddr string) *HttpRequest {
+	parsedRequest := &HttpRequest{
 		Headers:  make(map[string]string), // evade nil map
 		UrlParam: make(map[string]string),
 	}

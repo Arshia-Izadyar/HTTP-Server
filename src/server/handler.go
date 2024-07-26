@@ -2,11 +2,13 @@ package server
 
 import (
 	"errors"
+	"fmt"
+	"net"
 	"regexp"
 	"strings"
 )
 
-type HandlerFunc func(ResponseWriter, Request)
+type HandlerFunc func(*HttpRequest) *HttpResponse
 
 type Serve struct {
 	patterns []Pattern
@@ -61,4 +63,29 @@ func (s *Serve) sethandler(pattern string, f HandlerFunc) {
 	}
 	p.handler = f
 	s.patterns = append(s.patterns, p)
+}
+
+func (s *Serve) ServHTTP(req *HttpRequest, c net.Conn) {
+	var matchedPattern *Pattern
+	for _, p := range s.patterns {
+		if p.str.MatchString(req.Url) {
+			matchedPattern = &p
+			break
+		}
+	}
+	if matchedPattern != nil {
+
+		res := matchedPattern.handler(req)
+		strRes, err := res.Build()
+
+		fmt.Println(strRes)
+
+		if err != nil {
+			internalServerErrorResponse(c)
+		}
+		c.Write([]byte(strRes))
+	} else {
+		notFoundResponse(c)
+	}
+
 }

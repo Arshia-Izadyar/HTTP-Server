@@ -4,10 +4,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net"
 	"net/http"
 )
 
-func (r *Response) Build() (string, error) {
+func (r *HttpResponse) Build() (string, error) {
 	if r.ContentType == "application/json" && r.Body != "" {
 		_, err := json.Marshal(r.Body)
 		if err != nil {
@@ -19,11 +20,27 @@ func (r *Response) Build() (string, error) {
 	if r.CloseConnection {
 		response += "Connection: close\r\n"
 	}
-	response += fmt.Sprintf("\r\n\r\n %s", r.Body)
+	response += fmt.Sprintf("\r\n\r\n%s\r\n\r\n", r.Body)
 	return response, nil
 }
 
-func (r *Response) Write(input []byte) (int, error) {
+func Response(res map[string]string, code int) *HttpResponse {
+	body, err := json.Marshal(res)
+	if err != nil {
+		return nil
+	}
+	response := &HttpResponse{
+		HttpVersion:     "HTTP/1.1",
+		StatusCode:      code,
+		Status:          http.StatusText(code),
+		Body:            string(body),
+		ContentType:     "application/json",
+		CloseConnection: false,
+	}
+	return response
+}
+
+func (r *HttpResponse) Write(input []byte) (int, error) {
 	if len(input) == 0 {
 		return 0, errors.New("invlid body length")
 	}
@@ -38,8 +55,48 @@ func (r *Response) Write(input []byte) (int, error) {
 	return len(r.Body), nil
 }
 
-func (r *Response) WriteHeader(statusCode int) {
+func (r *HttpResponse) WriteHeader(statusCode int) {
 	r.StatusCode = statusCode
 	r.Status = http.StatusText(statusCode)
 
+}
+
+func invalidRequestResponse(cnn net.Conn) {
+	invalidResponse := HttpResponse{
+		HttpVersion:     "HTTP/1.1",
+		StatusCode:      400,
+		Status:          "Bad Request",
+		Body:            "",
+		ContentType:     "text/html",
+		CloseConnection: true,
+	}
+	res, _ := invalidResponse.Build()
+	cnn.Write([]byte(res))
+}
+
+// TODO: Add debug
+func internalServerErrorResponse(cnn net.Conn) {
+	invalidResponse := HttpResponse{
+		HttpVersion:     "HTTP/1.1",
+		StatusCode:      500,
+		Status:          "Internal Error",
+		Body:            "",
+		ContentType:     "text/html",
+		CloseConnection: true,
+	}
+	res, _ := invalidResponse.Build()
+	cnn.Write([]byte(res))
+}
+
+func notFoundResponse(cnn net.Conn) {
+	invalidResponse := HttpResponse{
+		HttpVersion:     "HTTP/1.1",
+		StatusCode:      404,
+		Status:          "Not Found",
+		Body:            "",
+		ContentType:     "text/html",
+		CloseConnection: true,
+	}
+	res, _ := invalidResponse.Build()
+	cnn.Write([]byte(res))
 }

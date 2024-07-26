@@ -8,17 +8,10 @@ import (
 
 func main() {
 	m := server.NewServe()
-	m.HandlerFunc("/arshia", func(a server.ResponseWriter, b server.Request) {
+	m.HandlerFunc("/", func(r *server.HttpRequest) *server.HttpResponse {
+		response := server.Response(map[string]string{"status": "ok"}, 200)
 
-	})
-	m.HandlerFunc("/arshia2", func(a server.ResponseWriter, b server.Request) {
-
-	})
-	m.HandlerFunc("/arshia3", func(a server.ResponseWriter, b server.Request) {
-
-	})
-	m.HandlerFunc("/arshia4", func(a server.ResponseWriter, b server.Request) {
-
+		return response
 	})
 
 	var httpServer = &server.Server{
