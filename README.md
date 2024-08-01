@@ -15,6 +15,9 @@ HTTP/1.1 server based on tcp connections
 
 5. added method check (users be able to add method before the path => "POST /test/hello" )
 
-# TODO
+6. parse form-data request
 
-- parse form-data request
+7. serve static files
+
+8. serve html
+# TODO
