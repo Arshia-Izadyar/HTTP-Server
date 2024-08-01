@@ -6,6 +6,14 @@ import (
 	"net"
 )
 
+var methods = [5]string{
+	"POST",
+	"PUT",
+	"GET",
+	"DELETE",
+	"OPTIONS",
+}
+
 // TODO: add timeout
 type Server struct {
 	Port    int
@@ -50,7 +58,7 @@ func handleRequest(c net.Conn, handler Handler) {
 	}
 	a := string(request[:bytesRed])
 	// parse the handleRequest
-	req := ParseHttpRequest(a) // a request with headers / body / etc
+	req := ParseHttpRequest(a, c.RemoteAddr().String()) // a request with headers / body / etc
 	// handlers should handle this
 	handler.ServeHTTP(req, c)
 	return

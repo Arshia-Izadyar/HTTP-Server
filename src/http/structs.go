@@ -3,9 +3,10 @@ package http
 type HttpRequest struct {
 	Method      string
 	Path        string
+	Ip          string
 	HTTPVersion string
 	Headers     map[string]string
-	Body        any
+	Body        string
 	UrlParams   QueryParameter
 }
 

@@ -3,16 +3,18 @@ a simple multithreaded HTTP server from scratch with go
 
 HTTP/1.1 server based on tcp connections
 
-# Features 
+# Features
 
 1. adding mux handlers (same as go ServeMux but simpler)
 
-2. being able to parse url params and use them in handlers 
+2. being able to parse url params and use them in handlers
 
-3. multithreaded 
+3. multithreaded
 
-4. all the functionality you expect from a super simple HTTP server  
+4. all the functionality you expect from a super simple HTTP server
 
-# TODO 
+5. added method check (users be able to add method before the path => "POST /test/hello" )
 
-- add method check (users be able to add method before the path => "POST /test/hello" )
+# TODO
+
+- parse form-data request

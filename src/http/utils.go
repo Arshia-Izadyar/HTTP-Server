@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
 )
 
 type QueryParameter map[int]map[string]string
@@ -32,18 +33,33 @@ func convertResponseToHTTP(res HttpResponse) (result string) {
 // create response
 // TODO: add error
 func Cr(code int, body map[string]string) HttpResponse {
-	headers := map[string]string{
-		"Content-Type": "application/json",
-	}
 	json, err := json.Marshal(body)
 	if err != nil {
 		return HttpResponse{}
+	}
+	headers := map[string]string{
+		"Content-Type":   "application/json",
+		"Content-Length": strconv.Itoa(len(string(json))),
 	}
 	return HttpResponse{
 		Code:     code,
 		Message:  http.StatusText(code),
 		Protocol: "HTTP/1.1",
 		Body:     string(json),
+		Headers:  headers,
+	}
+}
+
+func Response(code int, body, contentType string) HttpResponse {
+	headers := map[string]string{
+		"Content-Type":   contentType,
+		"Content-Length": strconv.Itoa(len(body)),
+	}
+	return HttpResponse{
+		Code:     code,
+		Message:  http.StatusText(code),
+		Protocol: "HTTP/1.1",
+		Body:     body,
 		Headers:  headers,
 	}
 }

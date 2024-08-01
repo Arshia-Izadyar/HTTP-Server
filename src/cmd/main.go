@@ -4,19 +4,16 @@ import (
 	"log"
 
 	"github.com/Arshia-Izadyar/HTTP-Server/src/http"
+	"github.com/Arshia-Izadyar/HTTP-Server/src/impl"
 )
 
 func main() {
 	mx := http.NewMux()
-	mx.HandlerFunc("/", func(req *http.HttpRequest) http.HttpResponse { return http.HttpResponse{} })
-
-	mx.HandlerFunc("/prod/:test", func(req *http.HttpRequest) http.HttpResponse {
-		test, err := req.UrlParams.Get("test")
-		if err != nil {
-
-		}
-		return http.Cr(200, map[string]string{"test": test})
-	})
+	mx.HandlerFunc("GET /", impl.ResponseHtml)
+	mx.HandlerFunc("GET /file/", impl.ServeImage)
+	mx.HandlerFunc("GET /file/:filename", impl.ServeFile)
+	mx.HandlerFunc("POST /echo/body", impl.EchoBody)
+	mx.HandlerFunc("GET /echo/:echo", impl.EchoParameter)
 
 	server := &http.Server{
 		Port:    6969,
