@@ -30,13 +30,14 @@ func NewMux() *Mux {
 		handlers: []route{},
 	}
 }
-func (m *Mux) HandlerFunc(path string, handler HandlerFunc) {
 
+func (m *Mux) HandlerFunc(path string, handler HandlerFunc) {
 	err := m.setHandler(path, handler)
 	if err != nil {
 		panic(err)
 	}
 }
+
 func (m *Mux) setHandler(path string, handler HandlerFunc) error {
 	r := route{
 		handler: handler,
@@ -52,7 +53,7 @@ func (m *Mux) setHandler(path string, handler HandlerFunc) error {
 			}
 		}
 		if r.Method == "" {
-			return errors.New(fmt.Sprintf("the value %s is not a http method", splitedPath[0]))
+			return fmt.Errorf("the value %s is not a http method", splitedPath[0])
 		}
 	} else if len(splitedPath) > 2 {
 		return errors.New(fmt.Sprintf("the %s is not a valid path", path))
@@ -124,6 +125,7 @@ func writeError(c net.Conn, msg string) {
 		panic(err)
 	}
 }
+
 func writeNotFound(c net.Conn) {
 	var response HttpResponse = Cr(404, map[string]string{"status": "not found"})
 	_, err := c.Write([]byte(convertResponseToHTTP(response)))
