@@ -60,6 +60,7 @@ func (m *Mux) setHandler(path string, handler HandlerFunc) error {
 	} else {
 		r.Method = "*"
 	}
+	// lol
 	// path = "^" + path + "$"
 	path = "^" + regexp.QuoteMeta(path) + "$"
 	re := regexp.MustCompile(`:([a-zA-Z0-9\-\.]+)`)
